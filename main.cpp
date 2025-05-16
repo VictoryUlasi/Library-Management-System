@@ -2,16 +2,18 @@
 #include <windows.h>   // For Windows-specific console functions
 #include <conio.h>     // For getch() to capture keyboard input
 #include "Library.hpp" // Custom header for the Library class and related functionality
+#include <fstream>
 
 using namespace std; // Allows use of standard names without ' '
 
 void displayMenu();                                  // Displays the main menu
-void performSelection(int &selection, Library &lib); // Handles user selection based on menu input
+void performSelection(int &selection, Library &lib, ofstream& booksFile); // Handles user selection based on menu input
 void ClearScreen();                                  // Clears the console screen
 
 int main()
 {
     Library lib1; // Create a Library object
+    ofstream booksFile("lib.txt" , ios::app);
 
     int user_selection; // Variable to store user's menu selection
 
@@ -20,9 +22,10 @@ int main()
         ClearScreen();                          // Clear the screen before displaying the menu
         displayMenu();                          // Show the menu options
         cin >> user_selection;                  // Get user input
-        performSelection(user_selection, lib1); // Call function to handle the selection
+        performSelection(user_selection, lib1, booksFile); // Call function to handle the selection
     } while (user_selection != 0); // Repeat until user chooses to exit
 
+    booksFile.close();
     return 0; // End of program
 }
 
@@ -43,7 +46,7 @@ void displayMenu()
     cout << "0. Exit" << endl;
 }
 
-void performSelection(int &selection, Library &lib)
+void performSelection(int &selection, Library &lib ,ofstream& booksFile)
 {
     switch (selection)
     {
@@ -62,6 +65,9 @@ void performSelection(int &selection, Library &lib)
         getline(cin, bookAuthor); // Get the author's name
 
         lib.addBook(bookID, bookName, bookAuthor); // Add book to library
+
+        string nbookID = to_string(bookID);
+        booksFile << nbookID + ";" + bookName + ";" + bookAuthor << endl;
         break;
     }
     case 2: // remove book
