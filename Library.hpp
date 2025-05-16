@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <fstream>
 #include "Book.hpp"
 #include "User.hpp"
 
@@ -15,11 +16,11 @@ private:
     int userID = 1;
 
 public:
-    void addBook(int bookID, std::string bookTitle, std::string bookAuthor, bool isAvailable = true);
+    void addBook(int bookID, std::string bookTitle, std::string bookAuthor, std::ofstream& booksFile, bool isAvailable = true);
     void removeBook(int id);
     void displayBooks();
     void issueBook(int bookID, int userID);
     void returnBook(int bookID);
-    int addUser(std::string userName , int userID);
+    int addUser(std::string userName , int userID, std::ofstream& usersFile);
     void displayUsers();
 };
