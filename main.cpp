@@ -30,6 +30,8 @@ int main()
 
     oBooksFile.close();
     oUsersFile.close();
+    iBooksFile.close();
+    iUsersFile.close();
     return 0; // End of program
 }
 
