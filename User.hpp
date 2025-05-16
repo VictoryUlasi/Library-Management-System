@@ -16,5 +16,6 @@ public:
     int getUserID() const;
     std::string getUsername() const;
     void issueUserBook(int bookID);
+    std::vector<int> getBorrowedBook();
 };
 

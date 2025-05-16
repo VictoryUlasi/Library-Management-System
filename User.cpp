@@ -14,8 +14,10 @@
     {
         return userName;
     }
-
     void User::issueUserBook(int bookID)
     {
         borrowedBook.push_back(bookID);
+    }
+    std::vector<int> User::getBorrowedBook(){
+        return borrowedBook;
     }

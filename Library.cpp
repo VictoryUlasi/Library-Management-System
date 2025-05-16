@@ -2,13 +2,14 @@
 #include <iomanip>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <map>
 #include <fstream>
 #include "Book.hpp"
 #include "User.hpp"
 #include "Library.hpp"
 
-int Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor,std::ofstream& booksFile, bool isAvailable)
+int Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor,std::ofstream& oBooksFile, bool isAvailable)
 {
 
     for(auto i : books){
@@ -17,7 +18,7 @@ int Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor,s
     Book book(bookID, bookTitle, bookAuthor, isAvailable);
     books.push_back(book);
 
-    booksFile << std::to_string(bookID) + ";" + bookTitle + ";" + bookAuthor << std::endl;
+    oBooksFile << bookID << ";" << bookTitle << ";" << bookAuthor << ";" << std::endl;
     return 0;
 }
 
@@ -35,26 +36,44 @@ void Library::removeBook(int id)
     }
 }
 
-void Library::displayBooks()
+void Library::displayBooks(std::ifstream& iBooksFile)
 {
-    for (auto &i : books)
-    {
-        std::string username = "In House";
+    iBooksFile.clear();                // Clear fstream without having to reopen fstream
+    iBooksFile.seekg(0,std::ios::beg); // Move fstream to top right of file so it can re read
 
-        for (auto &j : users)
-        {
-            if (j.getUserID() == i.getUserBook())
-            {
-                username = j.getUsername();
-                break;
+    std::string bookID;
+    std::string bookTitle;
+    std::string bookAuthor;
+
+    std::string line;
+
+    std::string username = "In House";
+
+    while(std::getline(iBooksFile, line)){
+        std::stringstream ss(line);
+
+        std::getline(ss, bookID, ';');
+        std::getline(ss, bookTitle, ';');
+        std::getline(ss, bookAuthor, ';');
+
+        /*
+        for(auto &i : users){ //Brain rot :( doesnt work for some reason
+            for(auto j : i.getBorrowedBook()){
+                if(j == std::stoi(bookID)){
+                    username = i.getUsername();
+                    goto print_data;
+                }
             }
         }
-        std::cout << std::left << "ID: " << std::setw(10) << i.getID()
-                  << " Title: " << std::setw(25) << i.getTitle()
-                  << "\tAuthor: " << std::setw(10) << i.getAuthor()
-                  << "\tAvail: " << std::setw(5) << ((i.getAvailability()) ? "In" : "Out")
-                  << "\tCheckout: " << std::setw(20) << username << std::endl;
+        */
+        print_data: //break out of outer for-loop so program doesnt keep looping even after finding the user. ** Looking for a better implementation of this :( **
+
+        std::cout << std::left << "ID: " << std::setw(10) << bookID
+                  << " Title: " << std::setw(25) << bookTitle
+                  << "\tAuthor: " << std::setw(10) << bookAuthor << std::endl;
+                  //<< "\tCheckout: " << std::setw(20) << username << std::endl; //Unimplemented For now
     }
+    
 }
 
 void Library::issueBook(int bookID, int userID)
@@ -111,7 +130,7 @@ void Library::returnBook(int bookID)
     }
 }
 
-int Library::addUser(std::string userName , int userID, std::ofstream& usersFile)
+int Library::addUser(std::string userName , int userID, std::ofstream& oUsersFile)
 {
     for(auto i : users){
         if(i.getUserID() == userID) return 1;
@@ -119,15 +138,25 @@ int Library::addUser(std::string userName , int userID, std::ofstream& usersFile
     User user(userName, userID);
     users.push_back(user);
 
-    usersFile << std::to_string(userID) << ";" << userName << std::endl;
+    oUsersFile << userID << ";" << userName << ";" << std::endl;
 
     return 0;
 }
 
-void Library::displayUsers()
+void Library::displayUsers(std::ifstream& iUsersFile)
 {
-    for (const auto &i : users)
-    {
-        std::cout << "Name: " << i.getUsername() << "\tUserID: " << i.getUserID() << std::endl;
+    iUsersFile.clear(); // Same Implementation in displayBook() function
+    iUsersFile.seekg(0,std::ios::beg); // Same Implementation in displayBook() function
+
+    std::string userName;
+    std::string userID;
+    std::string line;
+
+    while(std::getline(iUsersFile, line)){
+        std::stringstream ss(line);
+        std::getline(ss, userID, ';');
+        std::getline(ss, userName, ';');
+
+        std::cout << "Name: " << userName << "\tUserID: " << std::stoi(userID) << std::endl; //Format to look prettier on console later :)
     }
 }
