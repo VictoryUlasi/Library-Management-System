@@ -65,7 +65,11 @@ void performSelection(int &selection, Library &lib ,ofstream& booksFile, ofstrea
         cout << "Enter Book Author: ";
         getline(cin, bookAuthor); // Get the author's name
 
-        lib.addBook(bookID, bookName, bookAuthor, booksFile); // Add book to library
+        if(lib.addBook(bookID, bookName, bookAuthor, booksFile)){  // Add book to library
+            ClearScreen(); 
+            cout << "{Error}Duplicate Book ID.";
+            getch();
+        }
         break;
     }
     case 2: // remove book
@@ -87,7 +91,11 @@ void performSelection(int &selection, Library &lib ,ofstream& booksFile, ofstrea
         cin.ignore();           // Clears the input buffer to ensure getline reads properly.
         getline(cin, userName); // Get full name
 
-        lib.addUser(userName , userID, usersFile);  // Add user to library
+        if(lib.addUser(userName , userID, usersFile)){  // Add user to library
+            ClearScreen(); 
+            cout << "{Error}Duplicate User ID.";
+            getch();
+        }
         break;
     }
     case 4: // display all users

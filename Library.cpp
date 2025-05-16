@@ -8,12 +8,17 @@
 #include "User.hpp"
 #include "Library.hpp"
 
-void Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor,std::ofstream& booksFile, bool isAvailable)
+int Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor,std::ofstream& booksFile, bool isAvailable)
 {
+
+    for(auto i : books){
+        if(i.getID() == bookID) return 1;
+    }
     Book book(bookID, bookTitle, bookAuthor, isAvailable);
     books.push_back(book);
 
     booksFile << std::to_string(bookID) + ";" + bookTitle + ";" + bookAuthor << std::endl;
+    return 0;
 }
 
 void Library::removeBook(int id)
@@ -108,6 +113,9 @@ void Library::returnBook(int bookID)
 
 int Library::addUser(std::string userName , int userID, std::ofstream& usersFile)
 {
+    for(auto i : users){
+        if(i.getUserID() == userID) return 1;
+    }
     User user(userName, userID);
     users.push_back(user);
 

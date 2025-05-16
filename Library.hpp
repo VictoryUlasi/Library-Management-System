@@ -16,7 +16,7 @@ private:
     int userID = 1;
 
 public:
-    void addBook(int bookID, std::string bookTitle, std::string bookAuthor, std::ofstream& booksFile, bool isAvailable = true);
+    int addBook(int bookID, std::string bookTitle, std::string bookAuthor, std::ofstream& booksFile, bool isAvailable = true);
     void removeBook(int id);
     void displayBooks();
     void issueBook(int bookID, int userID);
