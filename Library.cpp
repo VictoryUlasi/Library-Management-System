@@ -103,9 +103,9 @@ void Library::returnBook(int bookID)
     }
 }
 
-int Library::addUser(std::string userName)
+int Library::addUser(std::string userName , int userID)
 {
-    User user(userName, userID++);
+    User user(userName, userID);
     users.push_back(user);
 
     return 0;

@@ -20,6 +20,6 @@ public:
     void displayBooks();
     void issueBook(int bookID, int userID);
     void returnBook(int bookID);
-    int addUser(std::string userName);
+    int addUser(std::string userName , int userID);
     void displayUsers();
 };
