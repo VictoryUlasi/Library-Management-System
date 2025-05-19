@@ -5,9 +5,7 @@
 #include <sstream>
 #include <map>
 #include <fstream>
-#include "Book.hpp"
-#include "User.hpp"
-#include "Library.hpp"
+#include "libclass.hpp"
 
 int Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor,std::ofstream& oBooksFile, bool isAvailable)
 {

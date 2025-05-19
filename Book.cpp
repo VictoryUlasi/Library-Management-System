@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Book.hpp"
+#include "libclass.hpp"
 
     Book::Book(int bookID, std::string bookTitle, std::string bookAuthor, bool isAvailable)
         : bookID(bookID), bookTitle(bookTitle), bookAuthor(bookAuthor), isAvailable(isAvailable) {}
