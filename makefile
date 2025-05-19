@@ -9,7 +9,7 @@ SRCS = main.cpp book.cpp user.cpp library.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
-all : $(TARGET) clean
+all : $(TARGET) clean run
 
 $(TARGET) : $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
@@ -17,5 +17,8 @@ $(TARGET) : $(OBJS)
 %.o :  %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-clean:
-	rm -f $(OBJS) $(TARGET)
+clean :
+	del /Q $(OBJS)
+
+run : LibraryApp.exe
+	LibraryApp.exe
