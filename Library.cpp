@@ -50,7 +50,7 @@ void Library::initBooks(ifstream &iBooksFile)
     }
 }
 
-void Library::removeBook(int id)
+void Library::removeBook(int id, ofstream &oBooksFile)
 {
     int bookPos = 0;
     for (const auto &i : books)
@@ -62,11 +62,26 @@ void Library::removeBook(int id)
         }
         bookPos++;
     }
+
+    if (oBooksFile.is_open())
+    {
+        /*Needs Better Implementation but works for now,
+        im thinking of just loading everything into a vector
+        on program start and then writing everything on close
+        so i dont have to keep opening and closing files. */
+        oBooksFile.close();
+        oBooksFile.open("libBook.txt", ios::out);
+    }
+    for (const auto &i : books)
+    {
+        oBooksFile << i.getID() << ";" << i.getTitle() << ";" << i.getAuthor() << ";" << endl;
+    }
+    cout << "Book Removed." << endl;
 }
 
 void Library::displayBooks(ifstream &iBooksFile)
 {
-    iBooksFile.clear();                 // Clear fstream without having to reopen fstream
+    iBooksFile.clear();            // Clear fstream without having to reopen fstream
     iBooksFile.seekg(0, ios::beg); // Move fstream to top right of file so it can re read
 
     string bookID;
@@ -99,8 +114,8 @@ void Library::displayBooks(ifstream &iBooksFile)
         */
 
         cout << left << "ID: " << setw(10) << bookID
-                  << " Title: " << setw(25) << bookTitle
-                  << "\tAuthor: " << setw(10) << bookAuthor << endl;
+             << " Title: " << setw(25) << bookTitle
+             << "\tAuthor: " << setw(10) << bookAuthor << endl;
         //<< "\tCheckout: " << setw(20) << username << endl; //Unimplemented For now
     }
 }
@@ -199,7 +214,7 @@ void Library::initUsers(ifstream &iUsersFile)
 
 void Library::displayUsers(ifstream &iUsersFile)
 {
-    iUsersFile.clear();                 // Same Implementation in displayBook() function
+    iUsersFile.clear();            // Same Implementation in displayBook() function
     iUsersFile.seekg(0, ios::beg); // Same Implementation in displayBook() function
 
     string userName;

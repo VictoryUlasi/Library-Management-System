@@ -95,7 +95,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         int bookID;
         cout << "Enter Book ID to Remove: ";
         cin >> bookID;          // Get the book ID to remove
-        lib.removeBook(bookID); // Remove book from library
+        lib.removeBook(bookID, oBooksFile); // Remove book from library
         break;
     }
     case 3: // add user

@@ -20,9 +20,9 @@ class Book{
     Book(int bookID, string bookTitle, string bookAuthor, bool isAvailable);
 
     int getID() const;
-    string getTitle();
-    string getAuthor();
-    bool getAvailability();
+    string getTitle() const;
+    string getAuthor() const;
+    bool getAvailability() const;
     void setAvailability(bool);
     int getUserBook() const;
     void setUserBook(int);
@@ -57,7 +57,7 @@ private:
 public:
     int addBook(int bookID, string bookTitle, string bookAuthor, ofstream& oBooksFile, bool isAvailable = true);
     void initBooks(ifstream& iBooksFile);
-    void removeBook(int id);
+    void removeBook(int id, ofstream& oBooksFile);
     void displayBooks(ifstream& iBooksFile);
     void issueBook(int bookID, int userID);
     void returnBook(int bookID);

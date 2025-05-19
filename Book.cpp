@@ -11,15 +11,15 @@ int Book::getID() const
 {
     return bookID;
 }
-string Book::getTitle()
+string Book::getTitle() const
 {
     return bookTitle;
 }
-string Book::getAuthor()
+string Book::getAuthor() const
 {
     return bookAuthor;
 }
-bool Book::getAvailability()
+bool Book::getAvailability() const
 {
     return isAvailable;
 }
