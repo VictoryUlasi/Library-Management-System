@@ -5,21 +5,23 @@
 #include <map>
 #include <fstream>
 
+using namespace std;
+
 // ---- Book Class ----
 class Book{
     private:
     int bookID;
-    std::string bookTitle;
-    std::string bookAuthor;
+    string bookTitle;
+    string bookAuthor;
     bool isAvailable;
     int userBook = 0;
 
     public:
-    Book(int bookID, std::string bookTitle, std::string bookAuthor, bool isAvailable);
+    Book(int bookID, string bookTitle, string bookAuthor, bool isAvailable);
 
     int getID() const;
-    std::string getTitle();
-    std::string getAuthor();
+    string getTitle();
+    string getAuthor();
     bool getAvailability();
     void setAvailability(bool);
     int getUserBook() const;
@@ -30,36 +32,36 @@ class Book{
 class User
 {
 private:
-    std::string userName;
+    string userName;
     int userID;
-    std::vector<int> borrowedBook;
+    vector<int> borrowedBook;
 
 public:
-    User(std::string userName, int userID);
+    User(string userName, int userID);
 
     int getUserID() const;
-    std::string getUsername() const;
+    string getUsername() const;
     void issueUserBook(int bookID);
-    std::vector<int> getBorrowedBook();
+    vector<int> getBorrowedBook();
 };
 
 // ---- Library Class ----
 class Library
 {
-    std::vector<Book> books;
-    std::vector<User> users;
+    vector<Book> books;
+    vector<User> users;
 
 private:
     int userID = 1;
 
 public:
-    int addBook(int bookID, std::string bookTitle, std::string bookAuthor, std::ofstream& oBooksFile, bool isAvailable = true);
-    void initBooks(std::ifstream& iBooksFile);
+    int addBook(int bookID, string bookTitle, string bookAuthor, ofstream& oBooksFile, bool isAvailable = true);
+    void initBooks(ifstream& iBooksFile);
     void removeBook(int id);
-    void displayBooks(std::ifstream& iBooksFile);
+    void displayBooks(ifstream& iBooksFile);
     void issueBook(int bookID, int userID);
     void returnBook(int bookID);
-    int addUser(std::string userName , int userID, std::ofstream& oUsersFile);
-    void initUsers(std::ifstream& iUsersFile);
-    void displayUsers(std::ifstream& iUsersFile);
+    int addUser(string userName , int userID, ofstream& oUsersFile);
+    void initUsers(ifstream& iUsersFile);
+    void displayUsers(ifstream& iUsersFile);
 };

@@ -7,36 +7,42 @@
 #include <fstream>
 #include "libclass.hpp"
 
-int Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor,std::ofstream& oBooksFile, bool isAvailable)
+using namespace std;
+
+int Library::addBook(int bookID, string bookTitle, string bookAuthor, ofstream &oBooksFile, bool isAvailable)
 {
 
-    for(auto i : books){
-        if(i.getID() == bookID) return 1;
+    for (auto i : books)
+    {
+        if (i.getID() == bookID)
+            return 1;
     }
     Book book(bookID, bookTitle, bookAuthor, isAvailable);
     books.push_back(book);
 
-    oBooksFile << bookID << ";" << bookTitle << ";" << bookAuthor << ";" << std::endl;
+    oBooksFile << bookID << ";" << bookTitle << ";" << bookAuthor << ";" << endl;
     return 0;
 }
 
-void Library::initBooks(std::ifstream& iBooksFile){
+void Library::initBooks(ifstream &iBooksFile)
+{
 
-    std::string tempBookID;
-    std::string bookTitle;
-    std::string bookAuthor;
+    string tempBookID;
+    string bookTitle;
+    string bookAuthor;
     int bookID;
 
-    std::string line;
+    string line;
 
-    while(getline(iBooksFile,line)){
-        std::stringstream ss(line);
+    while (getline(iBooksFile, line))
+    {
+        stringstream ss(line);
 
-        std::getline(ss,tempBookID,';');
-        std::getline(ss,bookTitle,';');
-        std::getline(ss,bookAuthor,';');
+        getline(ss, tempBookID, ';');
+        getline(ss, bookTitle, ';');
+        getline(ss, bookAuthor, ';');
 
-        bookID = std::stoi(tempBookID);
+        bookID = stoi(tempBookID);
 
         Book book(bookID, bookTitle, bookAuthor, true);
 
@@ -58,45 +64,45 @@ void Library::removeBook(int id)
     }
 }
 
-void Library::displayBooks(std::ifstream& iBooksFile)
+void Library::displayBooks(ifstream &iBooksFile)
 {
-    iBooksFile.clear();                // Clear fstream without having to reopen fstream
-    iBooksFile.seekg(0,std::ios::beg); // Move fstream to top right of file so it can re read
+    iBooksFile.clear();                 // Clear fstream without having to reopen fstream
+    iBooksFile.seekg(0, ios::beg); // Move fstream to top right of file so it can re read
 
-    std::string bookID;
-    std::string bookTitle;
-    std::string bookAuthor;
+    string bookID;
+    string bookTitle;
+    string bookAuthor;
 
-    std::string line;
+    string line;
 
-    std::string username = "In House";
+    string username = "In House";
 
-    while(std::getline(iBooksFile, line)){
-        std::stringstream ss(line);
+    while (getline(iBooksFile, line))
+    {
+        stringstream ss(line);
 
-        std::getline(ss, bookID, ';');
-        std::getline(ss, bookTitle, ';');
-        std::getline(ss, bookAuthor, ';');
+        getline(ss, bookID, ';');
+        getline(ss, bookTitle, ';');
+        getline(ss, bookAuthor, ';');
 
         /*
         for(auto &i : users){ //Brain rot :( doesnt work for some reason
             for(auto j : i.getBorrowedBook()){
-                if(j == std::stoi(bookID)){
+                if(j == stoi(bookID)){
                     username = i.getUsername();
                     goto print_data;
                 }
             }
         }
-            
+
         print_data: //break out of outer for-loop so program doesnt keep looping even after finding the user. ** Looking for a better implementation of this :( **
         */
 
-        std::cout << std::left << "ID: " << std::setw(10) << bookID
-                  << " Title: " << std::setw(25) << bookTitle
-                  << "\tAuthor: " << std::setw(10) << bookAuthor << std::endl;
-                  //<< "\tCheckout: " << std::setw(20) << username << std::endl; //Unimplemented For now
+        cout << left << "ID: " << setw(10) << bookID
+                  << " Title: " << setw(25) << bookTitle
+                  << "\tAuthor: " << setw(10) << bookAuthor << endl;
+        //<< "\tCheckout: " << setw(20) << username << endl; //Unimplemented For now
     }
-    
 }
 
 void Library::issueBook(int bookID, int userID)
@@ -112,14 +118,14 @@ void Library::issueBook(int bookID, int userID)
                     j.issueUserBook(bookID);
                     i.setAvailability(false);
                     i.setUserBook(userID);
-                    std::cout << "Book Issued." << std::endl;
+                    cout << "Book Issued." << endl;
                     break;
                 }
             }
         }
         else if (i.getID() == bookID && i.getAvailability() == false)
         {
-            std::string username;
+            string username;
             for (auto &j : users)
             {
                 if (j.getUserID() == i.getUserBook())
@@ -128,7 +134,7 @@ void Library::issueBook(int bookID, int userID)
                     break;
                 }
             }
-            std::cout << "Book Already Issued to " << username << std::endl;
+            cout << "Book Already Issued to " << username << endl;
             break;
         }
     }
@@ -142,65 +148,70 @@ void Library::returnBook(int bookID)
         {
             i.setAvailability(true);
             i.setUserBook(0);
-            std::cout << "Book Returned." << std::endl;
+            cout << "Book Returned." << endl;
             break;
         }
         else if (i.getID() == bookID && i.getAvailability() == true)
         {
-            std::cout << "Book Already In House " << std::endl;
+            cout << "Book Already In House " << endl;
             break;
         }
     }
 }
 
-int Library::addUser(std::string userName , int userID, std::ofstream& oUsersFile)
+int Library::addUser(string userName, int userID, ofstream &oUsersFile)
 {
-    for(auto i : users){
-        if(i.getUserID() == userID) return 1;
+    for (auto i : users)
+    {
+        if (i.getUserID() == userID)
+            return 1;
     }
     User user(userName, userID);
     users.push_back(user);
 
-    oUsersFile << userID << ";" << userName << ";" << std::endl;
+    oUsersFile << userID << ";" << userName << ";" << endl;
 
     return 0;
 }
 
-void Library::initUsers(std::ifstream& iUsersFile){
-    std::string tempUserID;
-    std::string userName;
+void Library::initUsers(ifstream &iUsersFile)
+{
+    string tempUserID;
+    string userName;
     int userID;
 
-    std::string line;
+    string line;
 
-    while(getline(iUsersFile,line)){
-        std::stringstream ss(line);
+    while (getline(iUsersFile, line))
+    {
+        stringstream ss(line);
 
-        std::getline(ss,tempUserID,';');
-        std::getline(ss,userName,';');
+        getline(ss, tempUserID, ';');
+        getline(ss, userName, ';');
 
-        userID = std::stoi(tempUserID);
+        userID = stoi(tempUserID);
 
-        User user(userName,userID);
+        User user(userName, userID);
 
         users.push_back(user);
     }
 }
 
-void Library::displayUsers(std::ifstream& iUsersFile)
+void Library::displayUsers(ifstream &iUsersFile)
 {
-    iUsersFile.clear(); // Same Implementation in displayBook() function
-    iUsersFile.seekg(0,std::ios::beg); // Same Implementation in displayBook() function
+    iUsersFile.clear();                 // Same Implementation in displayBook() function
+    iUsersFile.seekg(0, ios::beg); // Same Implementation in displayBook() function
 
-    std::string userName;
-    std::string userID;
-    std::string line;
+    string userName;
+    string userID;
+    string line;
 
-    while(std::getline(iUsersFile, line)){
-        std::stringstream ss(line);
-        std::getline(ss, userID, ';');
-        std::getline(ss, userName, ';');
+    while (getline(iUsersFile, line))
+    {
+        stringstream ss(line);
+        getline(ss, userID, ';');
+        getline(ss, userName, ';');
 
-        std::cout << "Name: " << userName << "\tUserID: " << std::stoi(userID) << std::endl; //Format to look prettier on console later :)
+        cout << "Name: " << userName << "\tUserID: " << stoi(userID) << endl; // Format to look prettier on console later :)
     }
 }

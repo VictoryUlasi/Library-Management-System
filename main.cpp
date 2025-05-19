@@ -1,34 +1,34 @@
-#include <iostream>    // For standard I/O operations
-#include <windows.h>   // For Windows-specific console functions
-#include <conio.h>     // For getch() to capture keyboard input
+#include <iostream>     // For standard I/O operations
+#include <windows.h>    // For Windows-specific console functions
+#include <conio.h>      // For getch() to capture keyboard input
 #include "libclass.hpp" // Custom header for the Library class and related functionality
 #include <fstream>
 
 using namespace std; // Allows use of standard names without ' '
 
-bool initialize(Library& lib, ifstream& iBooksFile,ifstream& iUsersFile);
-void displayMenu();                                  // Displays the main menu
-void performSelection(int &selection, Library &lib, ofstream& oBooksFile, ofstream& oUsersFile, ifstream& iBooksFile, ifstream& iUsersFile); // Handles user selection based on menu input
-void ClearScreen();                                  // Clears the console screen
+bool initialize(Library &lib, ifstream &iBooksFile, ifstream &iUsersFile);
+void displayMenu();                                                                                                                          // Displays the main menu
+void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstream &oUsersFile, ifstream &iBooksFile, ifstream &iUsersFile); // Handles user selection based on menu input
+void ClearScreen();                                                                                                                          // Clears the console screen
 
 int main()
 {
-    
+
     Library lib1; // Create a Library object
-    ofstream oBooksFile("libBook.txt" , ios::app);
-    ofstream oUsersFile("libUser.txt" , ios::app);
+    ofstream oBooksFile("libBook.txt", ios::app);
+    ofstream oUsersFile("libUser.txt", ios::app);
     ifstream iBooksFile("libBook.txt");
     ifstream iUsersFile("libUser.txt");
 
     int user_selection; // Variable to store user's menu selection
 
-    initialize(lib1,iBooksFile,iUsersFile);
+    initialize(lib1, iBooksFile, iUsersFile);
 
     do
     {
-        ClearScreen();                          // Clear the screen before displaying the menu
-        displayMenu();                          // Show the menu options
-        cin >> user_selection;                  // Get user input
+        ClearScreen();                                                                          // Clear the screen before displaying the menu
+        displayMenu();                                                                          // Show the menu options
+        cin >> user_selection;                                                                  // Get user input
         performSelection(user_selection, lib1, oBooksFile, oUsersFile, iBooksFile, iUsersFile); // Call function to handle the selection
     } while (user_selection != 0); // Repeat until user chooses to exit
 
@@ -39,7 +39,8 @@ int main()
     return 0; // End of program
 }
 
-bool initialize(Library& lib, ifstream& iBooksFile, ifstream& iUsersFile){
+bool initialize(Library &lib, ifstream &iBooksFile, ifstream &iUsersFile)
+{
     lib.initBooks(iBooksFile);
     lib.initUsers(iUsersFile);
 
@@ -63,7 +64,7 @@ void displayMenu()
     cout << "0. Exit" << endl;
 }
 
-void performSelection(int &selection, Library &lib ,ofstream& oBooksFile, ofstream& oUsersFile, ifstream& iBooksFile, ifstream& iUsersFile)
+void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstream &oUsersFile, ifstream &iBooksFile, ifstream &iUsersFile)
 {
     switch (selection)
     {
@@ -81,8 +82,9 @@ void performSelection(int &selection, Library &lib ,ofstream& oBooksFile, ofstre
         cout << "Enter Book Author: ";
         getline(cin, bookAuthor); // Get the author's name
 
-        if(lib.addBook(bookID, bookName, bookAuthor, oBooksFile)){  // Add book to library
-            ClearScreen(); 
+        if (lib.addBook(bookID, bookName, bookAuthor, oBooksFile))
+        { // Add book to library
+            ClearScreen();
             cout << "{Error}Duplicate Book ID.";
             getch();
         }
@@ -107,8 +109,9 @@ void performSelection(int &selection, Library &lib ,ofstream& oBooksFile, ofstre
         cin.ignore();           // Clears the input buffer to ensure getline reads properly.
         getline(cin, userName); // Get full name
 
-        if(lib.addUser(userName , userID, oUsersFile)){  // Add user to library
-            ClearScreen(); 
+        if (lib.addUser(userName, userID, oUsersFile))
+        { // Add user to library
+            ClearScreen();
             cout << "{Error}Duplicate User ID.";
             getch();
         }
@@ -116,7 +119,7 @@ void performSelection(int &selection, Library &lib ,ofstream& oBooksFile, ofstre
     }
     case 4: // display all users
     {
-        ClearScreen();      // Clear console for better readability
+        ClearScreen();                // Clear console for better readability
         lib.displayUsers(iUsersFile); // Show all registered users
         cout << "Press Enter/Return to continue....\n";
         getch(); // Pauses the program until a key is pressed (for Windows only).
@@ -124,7 +127,7 @@ void performSelection(int &selection, Library &lib ,ofstream& oBooksFile, ofstre
     }
     case 5: // display books
     {
-        ClearScreen();      // Clear console for better readability
+        ClearScreen();                // Clear console for better readability
         lib.displayBooks(iBooksFile); // Show all available books
         cout << "Press Enter/Return to continue....\n";
         getch(); // Pauses the program until a key is pressed (for Windows only).
@@ -153,6 +156,7 @@ void performSelection(int &selection, Library &lib ,ofstream& oBooksFile, ofstre
     }
     case 0: // exit
     {
+        ClearScreen();
         break; // Exit the program
     }
     default:
