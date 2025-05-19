@@ -6,12 +6,14 @@
 
 using namespace std; // Allows use of standard names without ' '
 
+bool initialize(Library& lib, ifstream& iBooksFile,ifstream& iUsersFile);
 void displayMenu();                                  // Displays the main menu
 void performSelection(int &selection, Library &lib, ofstream& oBooksFile, ofstream& oUsersFile, ifstream& iBooksFile, ifstream& iUsersFile); // Handles user selection based on menu input
 void ClearScreen();                                  // Clears the console screen
 
 int main()
 {
+    
     Library lib1; // Create a Library object
     ofstream oBooksFile("libBook.txt" , ios::app);
     ofstream oUsersFile("libUser.txt" , ios::app);
@@ -19,6 +21,8 @@ int main()
     ifstream iUsersFile("libUser.txt");
 
     int user_selection; // Variable to store user's menu selection
+
+    initialize(lib1,iBooksFile,iUsersFile);
 
     do
     {
@@ -33,6 +37,13 @@ int main()
     iBooksFile.close();
     iUsersFile.close();
     return 0; // End of program
+}
+
+bool initialize(Library& lib, ifstream& iBooksFile, ifstream& iUsersFile){
+    lib.initBooks(iBooksFile);
+    lib.initUsers(iUsersFile);
+
+    return 0;
 }
 
 void displayMenu()

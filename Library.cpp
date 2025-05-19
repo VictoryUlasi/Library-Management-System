@@ -22,6 +22,30 @@ int Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor,s
     return 0;
 }
 
+void Library::initBooks(std::ifstream& iBooksFile){
+
+    std::string tempBookID;
+    std::string bookTitle;
+    std::string bookAuthor;
+    int bookID;
+
+    std::string line;
+
+    while(getline(iBooksFile,line)){
+        std::stringstream ss(line);
+
+        std::getline(ss,tempBookID,';');
+        std::getline(ss,bookTitle,';');
+        std::getline(ss,bookAuthor,';');
+
+        bookID = std::stoi(tempBookID);
+
+        Book book(bookID, bookTitle, bookAuthor, true);
+
+        books.push_back(book);
+    }
+}
+
 void Library::removeBook(int id)
 {
     int bookPos = 0;
@@ -65,8 +89,9 @@ void Library::displayBooks(std::ifstream& iBooksFile)
                 }
             }
         }
-        */
+            
         print_data: //break out of outer for-loop so program doesnt keep looping even after finding the user. ** Looking for a better implementation of this :( **
+        */
 
         std::cout << std::left << "ID: " << std::setw(10) << bookID
                   << " Title: " << std::setw(25) << bookTitle
@@ -141,6 +166,27 @@ int Library::addUser(std::string userName , int userID, std::ofstream& oUsersFil
     oUsersFile << userID << ";" << userName << ";" << std::endl;
 
     return 0;
+}
+
+void Library::initUsers(std::ifstream& iUsersFile){
+    std::string tempUserID;
+    std::string userName;
+    int userID;
+
+    std::string line;
+
+    while(getline(iUsersFile,line)){
+        std::stringstream ss(line);
+
+        std::getline(ss,tempUserID,';');
+        std::getline(ss,userName,';');
+
+        userID = std::stoi(tempUserID);
+
+        User user(userName,userID);
+
+        users.push_back(user);
+    }
 }
 
 void Library::displayUsers(std::ifstream& iUsersFile)
