@@ -10,6 +10,7 @@ bool initialize(Library &lib, ifstream &iBooksFile, ifstream &iUsersFile);
 void displayMenu();                                                                                                                          // Displays the main menu
 void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstream &oUsersFile, ifstream &iBooksFile, ifstream &iUsersFile); // Handles user selection based on menu input
 void ClearScreen();                                                                                                                          // Clears the console screen
+bool checkID(string &idNum);
 
 int main()
 {
@@ -64,25 +65,44 @@ void displayMenu()
     cout << "0. Exit" << endl;
 }
 
+bool checkID(string &idNum) //Returns False if all chars in string are digits, Returns True if any char is not a digit
+{
+    for (auto &i : idNum)
+    {
+        if (!isdigit(i))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstream &oUsersFile, ifstream &iBooksFile, ifstream &iUsersFile)
 {
     switch (selection)
     {
     case 1: // add book
     {
-        int bookID;
+        string bookID;
         string bookName;
         string bookAuthor;
 
         cout << "Enter Book ID: ";
         cin >> bookID; // Get the book ID from user
+
+        if (checkID(bookID))
+        {
+            cout << "Error... Enter a valid number." << endl;
+            getch();
+            break;
+        }
         cout << "Enter Book Name: ";
         cin.ignore();           // Clears the input buffer to ensure getline reads properly.
         getline(cin, bookName); // Get the book title
         cout << "Enter Book Author: ";
         getline(cin, bookAuthor); // Get the author's name
 
-        if (lib.addBook(bookID, bookName, bookAuthor, oBooksFile))
+        if (lib.addBook(stoi(bookID), bookName, bookAuthor, oBooksFile))
         { // Add book to library
             ClearScreen();
             cout << "{Error}Duplicate Book ID.";
@@ -94,7 +114,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
     {
         int bookID;
         cout << "Enter Book ID to Remove: ";
-        cin >> bookID;          // Get the book ID to remove
+        cin >> bookID;                      // Get the book ID to remove
         lib.removeBook(bookID, oBooksFile); // Remove book from library
         break;
     }
