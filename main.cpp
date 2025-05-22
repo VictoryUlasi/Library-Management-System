@@ -11,6 +11,7 @@ void displayMenu();                                                             
 void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstream &oUsersFile, ifstream &iBooksFile, ifstream &iUsersFile); // Handles user selection based on menu input
 void ClearScreen();                                                                                                                          // Clears the console screen
 bool checkID(string &idNum);
+void refresh(ofstream &file , int state);
 
 int main()
 {
@@ -77,6 +78,16 @@ bool checkID(string &idNum) //Returns False if all chars in string are digits, R
     return false;
 }
 
+void refresh(ofstream &file , int state){ //Refresh File to allow printing in real time rather than on close. state = 0 for oBooksFile, state = 1 for oUsersFile
+    if(file.is_open() && state == 0){
+        file.close();
+        file.open("libBook.txt", ios::app);
+    }else if(file.is_open() && state == 1){
+        file.close();
+        file.open("libUser.txt", ios::app);
+    }
+}
+
 void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstream &oUsersFile, ifstream &iBooksFile, ifstream &iUsersFile)
 {
     switch (selection)
@@ -92,7 +103,8 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
 
         if (checkID(bookID))
         {
-            cout << "Error... Enter a valid number." << endl;
+            cout << "Enter a valid ID number." << endl;
+            cout << "Press Enter to Continue...";
             getch();
             break;
         }
@@ -108,6 +120,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
             cout << "{Error}Duplicate Book ID.";
             getch();
         }
+        refresh(oBooksFile, 0);
         break;
     }
     case 2: // remove book
@@ -121,20 +134,29 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
     case 3: // add user
     {
         string userName;
-        int userID;
+        string userID;
 
         cout << "Enter UserID: ";
         cin >> userID;
+
+         if(checkID(userID)){
+            cout << "Enter a valid ID number." << endl;
+            cout << "Press Enter to Continue...";
+            getch();
+            break;
+        }
+        
         cout << "Enter name (first last): ";
         cin.ignore();           // Clears the input buffer to ensure getline reads properly.
         getline(cin, userName); // Get full name
 
-        if (lib.addUser(userName, userID, oUsersFile))
+        if (lib.addUser(userName, stoi(userID), oUsersFile))
         { // Add user to library
             ClearScreen();
             cout << "{Error}Duplicate User ID.";
             getch();
         }
+        refresh(oUsersFile , 1);
         break;
     }
     case 4: // display all users

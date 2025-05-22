@@ -12,7 +12,7 @@ using namespace std;
 int Library::addBook(int bookID, string bookTitle, string bookAuthor, ofstream &oBooksFile, bool isAvailable)
 {
 
-    for (auto i : books)
+    for (const auto& i : books)
     {
         if (i.getID() == bookID)
             return 1;
@@ -21,6 +21,7 @@ int Library::addBook(int bookID, string bookTitle, string bookAuthor, ofstream &
     books.push_back(book);
 
     oBooksFile << bookID << ";" << bookTitle << ";" << bookAuthor << ";" << endl;
+
     return 0;
 }
 
