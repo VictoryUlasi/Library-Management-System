@@ -1,8 +1,10 @@
+#define NOMINMAX
 #include <iostream>     // For standard I/O operations
 #include <windows.h>    // For Windows-specific console functions
 #include <conio.h>      // For getch() to capture keyboard input
 #include "libclass.hpp" // Custom header for the Library class and related functionality
 #include <fstream>
+#include <limits>
 
 using namespace std; // Allows use of standard names without ' '
 
@@ -10,7 +12,7 @@ bool initialize(Library &lib, ifstream &iBooksFile, ifstream &iUsersFile);
 void displayMenu();                                                                                                                          // Displays the main menu
 void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstream &oUsersFile, ifstream &iBooksFile, ifstream &iUsersFile); // Handles user selection based on menu input
 void ClearScreen();                                                                                                                          // Clears the console screen
-bool checkID(string &idNum);
+bool checkNum(string &idNum);
 void refresh(ofstream &file , int state);
 
 int main()
@@ -31,6 +33,11 @@ int main()
         ClearScreen();                                                                          // Clear the screen before displaying the menu
         displayMenu();                                                                          // Show the menu options
         cin >> user_selection;                                                                  // Get user input
+        while (!cin.good()) {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            user_selection = -1;
+        }
         performSelection(user_selection, lib1, oBooksFile, oUsersFile, iBooksFile, iUsersFile); // Call function to handle the selection
     } while (user_selection != 0); // Repeat until user chooses to exit
 
@@ -66,7 +73,7 @@ void displayMenu()
     cout << "0. Exit" << endl;
 }
 
-bool checkID(string &idNum) //Returns False if all chars in string are digits, Returns True if any char is not a digit
+bool checkNum(string &idNum) //Returns False if all chars in string are digits, Returns True if any char is not a digit
 {
     for (auto &i : idNum)
     {
@@ -78,7 +85,7 @@ bool checkID(string &idNum) //Returns False if all chars in string are digits, R
     return false;
 }
 
-void refresh(ofstream &file , int state){ //Refresh File to allow printing in real time rather than on close. state = 0 for oBooksFile, state = 1 for oUsersFile
+void refresh(ofstream &file , int state){ //Refresh File to allow printing in "real time" rather than on close. state = 0 for oBooksFile, state = 1 for oUsersFile
     if(file.is_open() && state == 0){
         file.close();
         file.open("libBook.txt", ios::app);
@@ -101,11 +108,11 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         cout << "Enter Book ID: ";
         cin >> bookID; // Get the book ID from user
 
-        if (checkID(bookID))
+        if (checkNum(bookID))
         {
             cout << "Enter a valid ID number." << endl;
             cout << "Press Enter to Continue...";
-            getch();
+            _getch();
             break;
         }
         cout << "Enter Book Name: ";
@@ -118,7 +125,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         { // Add book to library
             ClearScreen();
             cout << "{Error}Duplicate Book ID.";
-            getch();
+            _getch();
         }
         refresh(oBooksFile, 0);
         break;
@@ -139,10 +146,10 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         cout << "Enter UserID: ";
         cin >> userID;
 
-         if(checkID(userID)){
+         if(checkNum(userID)){
             cout << "Enter a valid ID number." << endl;
             cout << "Press Enter to Continue...";
-            getch();
+            _getch();
             break;
         }
         
@@ -154,7 +161,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         { // Add user to library
             ClearScreen();
             cout << "{Error}Duplicate User ID.";
-            getch();
+            _getch();
         }
         refresh(oUsersFile , 1);
         break;
@@ -164,7 +171,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         ClearScreen();                // Clear console for better readability
         lib.displayUsers(iUsersFile); // Show all registered users
         cout << "Press Enter/Return to continue....\n";
-        getch(); // Pauses the program until a key is pressed (for Windows only).
+        _getch(); // Pauses the program until a key is pressed (for Windows only).
         break;
     }
     case 5: // display books
@@ -172,7 +179,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         ClearScreen();                // Clear console for better readability
         lib.displayBooks(iBooksFile); // Show all available books
         cout << "Press Enter/Return to continue....\n";
-        getch(); // Pauses the program until a key is pressed (for Windows only).
+        _getch(); // Pauses the program until a key is pressed (for Windows only).
         break;
     }
     case 6: // issue book
@@ -202,8 +209,9 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         break; // Exit the program
     }
     default:
+        ClearScreen();
         cout << "Invalid selection. Try again.\n"; // Inform user of invalid input
-        getch();                                   // Pauses the program until a key is pressed (for Windows only).
+        _getch();                                   // Pauses the program until a key is pressed (for Windows only).
     }
 }
 
