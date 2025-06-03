@@ -5,6 +5,7 @@
 #include "libclass.hpp" // Custom header for the Library class and related functionality
 #include <fstream>
 #include <limits>
+#include <string>
 
 using namespace std; // Allows use of standard names without ' '
 

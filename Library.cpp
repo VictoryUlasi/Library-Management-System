@@ -197,7 +197,6 @@ void Library::initUsers(ifstream &iUsersFile)
 {
     string tempUserID;
     string userName;
-    int userID;
 
     string line;
 
@@ -208,9 +207,7 @@ void Library::initUsers(ifstream &iUsersFile)
         getline(ss, tempUserID, ';');
         getline(ss, userName, ';');
 
-        userID = stoi(tempUserID);
-
-        User user(userName, userID);
+        User user(userName, stoi(tempUserID));
 
         users.push_back(user);
     }
