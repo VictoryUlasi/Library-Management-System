@@ -33,6 +33,7 @@ int main()
     {
         ClearScreen();                                                                          // Clear the screen before displaying the menu
         displayMenu();                                                                          // Show the menu options
+        cout << "Option: ";
         cin >> user_selection;                                                                  // Get user input
         while (!cin.good()) {
             cin.clear();
@@ -49,7 +50,7 @@ int main()
     return 0; // End of program
 }
 
-bool initialize(Library &lib, ifstream &iBooksFile, ifstream &iUsersFile)
+bool initialize(Library &lib, ifstream &iBooksFile, ifstream &iUsersFile) //read data from file and write to users and books vector.
 {
     lib.initBooks(iBooksFile);
     lib.initUsers(iUsersFile);
@@ -60,16 +61,17 @@ bool initialize(Library &lib, ifstream &iBooksFile, ifstream &iUsersFile)
 void displayMenu()
 {
     // Display the available options in the menu
-    cout << "----Library Management System----" << endl;
+    cout << "----LIBRARY MANAGEMENT SYSTEM V1.1----" << endl;
     cout << "1. Add Book" << endl;
     cout << "2. Remove Book" << endl;
 
     cout << "3. Add User" << endl;
-    cout << "4. Display All Users" << endl;
+    cout << "4. Remove User" << endl;
+    cout << "5. Display All Users" << endl;
 
-    cout << "5. Display All Books" << endl;
-    cout << "6. Issue Book" << endl;
-    cout << "7. Return Book" << endl;
+    cout << "6. Display All Books" << endl;
+    cout << "7. Issue Book" << endl;
+    cout << "8. Return Book" << endl;
 
     cout << "0. Exit" << endl;
 }
@@ -167,7 +169,18 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         refresh(oUsersFile , 1);
         break;
     }
-    case 4: // display all users
+    case 4: //remove User
+    {
+        int userID;
+        cout << "Enter User ID to remove: ";
+        cin >> userID;
+
+        ClearScreen();
+        lib.removeUser(userID, oUsersFile);
+        _getch();
+        break;
+    }
+    case 5: // display all users
     {
         ClearScreen();                // Clear console for better readability
         lib.displayUsers(iUsersFile); // Show all registered users
@@ -175,7 +188,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         _getch(); // Pauses the program until a key is pressed (for Windows only).
         break;
     }
-    case 5: // display books
+    case 6: // display books
     {
         ClearScreen();                // Clear console for better readability
         lib.displayBooks(iBooksFile); // Show all available books
@@ -183,7 +196,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         _getch(); // Pauses the program until a key is pressed (for Windows only).
         break;
     }
-    case 6: // issue book
+    case 7: // issue book
     {
         int bookID;
         int userID;
@@ -193,16 +206,19 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         cout << "Enter User ID: ";
         cin >> userID; // Get user ID who is borrowing
 
+        ClearScreen();
         lib.issueBook(bookID, userID,oBooksFile); // Issue book to user
         _getch(); // Pauses the program until a key is pressed (for Windows only).
         break;
     }
-    case 7: // return book
+    case 8: // return book
     {
         int bookID;
         cout << "Enter Book ID to Return: ";
         cin >> bookID;          // Get book ID to return
+        ClearScreen();
         lib.returnBook(bookID,oBooksFile); // Return book to library
+        _getch();
         break;
     }
     case 0: // exit

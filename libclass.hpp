@@ -55,14 +55,15 @@ private:
     int userID = 1;
 
 public:
-    int addBook(int bookID, string bookTitle, string bookAuthor, ofstream& oBooksFile);
     void initBooks(ifstream& iBooksFile);
+    int addBook(int bookID, string bookTitle, string bookAuthor, ofstream& oBooksFile);
     void removeBook(int id, ofstream& oBooksFile);
     void displayBooks(ifstream& iBooksFile);
     void issueBook(int bookID, int userID, ofstream& oBooksFile);
     void returnBook(int bookID, ofstream& oBooksFile);
-    int addUser(string userName , int userID, ofstream& oUsersFile);
     void initUsers(ifstream& iUsersFile);
+    int addUser(string userName , int userID, ofstream& oUsersFile);
     void displayUsers(ifstream& iUsersFile);
+    void removeUser(int id, ofstream& oUsersFile);
     void refresh(ofstream& oBooksFile);
 };
