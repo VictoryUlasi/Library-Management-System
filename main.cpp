@@ -192,7 +192,8 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         cout << "Enter User ID: ";
         cin >> userID; // Get user ID who is borrowing
 
-        lib.issueBook(bookID, userID); // Issue book to user
+        lib.issueBook(bookID, userID,oBooksFile); // Issue book to user
+        _getch(); // Pauses the program until a key is pressed (for Windows only).
         break;
     }
     case 7: // return book
@@ -200,7 +201,7 @@ void performSelection(int &selection, Library &lib, ofstream &oBooksFile, ofstre
         int bookID;
         cout << "Enter Book ID to Return: ";
         cin >> bookID;          // Get book ID to return
-        lib.returnBook(bookID); // Return book to library
+        lib.returnBook(bookID,oBooksFile); // Return book to library
         break;
     }
     case 0: // exit

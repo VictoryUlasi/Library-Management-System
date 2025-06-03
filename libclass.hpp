@@ -14,10 +14,10 @@ class Book{
     string bookTitle;
     string bookAuthor;
     bool isAvailable;
-    int userBook = 0;
+    int userBook;
 
     public:
-    Book(int bookID, string bookTitle, string bookAuthor, bool isAvailable);
+    Book(int bookID, string bookTitle, string bookAuthor, bool isAvailable = true , int userBook = 0);
 
     int getID() const;
     string getTitle() const;
@@ -55,13 +55,14 @@ private:
     int userID = 1;
 
 public:
-    int addBook(int bookID, string bookTitle, string bookAuthor, ofstream& oBooksFile, bool isAvailable = true);
+    int addBook(int bookID, string bookTitle, string bookAuthor, ofstream& oBooksFile);
     void initBooks(ifstream& iBooksFile);
     void removeBook(int id, ofstream& oBooksFile);
     void displayBooks(ifstream& iBooksFile);
-    void issueBook(int bookID, int userID);
-    void returnBook(int bookID);
+    void issueBook(int bookID, int userID, ofstream& oBooksFile);
+    void returnBook(int bookID, ofstream& oBooksFile);
     int addUser(string userName , int userID, ofstream& oUsersFile);
     void initUsers(ifstream& iUsersFile);
     void displayUsers(ifstream& iUsersFile);
+    void refresh(ofstream& oBooksFile);
 };

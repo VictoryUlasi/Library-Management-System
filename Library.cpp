@@ -6,10 +6,9 @@
 #include <map>
 #include <fstream>
 #include "libclass.hpp"
-
 using namespace std;
 
-int Library::addBook(int bookID, string bookTitle, string bookAuthor, ofstream &oBooksFile, bool isAvailable)
+int Library::addBook(int bookID, string bookTitle, string bookAuthor, ofstream &oBooksFile)
 {
 
     for (const auto& i : books)
@@ -17,10 +16,9 @@ int Library::addBook(int bookID, string bookTitle, string bookAuthor, ofstream &
         if (i.getID() == bookID)
             return 1;
     }
-    Book book(bookID, bookTitle, bookAuthor, isAvailable);
+    Book book(bookID, bookTitle, bookAuthor);
     books.push_back(book);
-
-    oBooksFile << bookID << ";" << bookTitle << ";" << bookAuthor << ";" << endl;
+    refresh(oBooksFile);
 
     return 0;
 }
@@ -31,7 +29,8 @@ void Library::initBooks(ifstream &iBooksFile)
     string tempBookID;
     string bookTitle;
     string bookAuthor;
-    int bookID;
+    string tempAvailability;
+    string tempUserBook;
 
     string line;
 
@@ -42,10 +41,10 @@ void Library::initBooks(ifstream &iBooksFile)
         getline(ss, tempBookID, ';');
         getline(ss, bookTitle, ';');
         getline(ss, bookAuthor, ';');
+        getline(ss, tempAvailability, ';');
+        getline(ss, tempUserBook, ';');
 
-        bookID = stoi(tempBookID);
-
-        Book book(bookID, bookTitle, bookAuthor, true);
+        Book book(stoi(tempBookID), bookTitle, bookAuthor, stoi(tempAvailability), stoi(tempUserBook));
 
         books.push_back(book);
     }
@@ -88,6 +87,8 @@ void Library::displayBooks(ifstream &iBooksFile)
     string bookID;
     string bookTitle;
     string bookAuthor;
+    string availability;
+    string userBook;
 
     string line;
 
@@ -100,28 +101,26 @@ void Library::displayBooks(ifstream &iBooksFile)
         getline(ss, bookID, ';');
         getline(ss, bookTitle, ';');
         getline(ss, bookAuthor, ';');
+        getline(ss, availability, ';');
+        getline(ss, userBook, ';');
 
-        /*
-        for(auto &i : users){ //Brain rot :( doesnt work for some reason
-            for(auto j : i.getBorrowedBook()){
-                if(j == stoi(bookID)){
-                    username = i.getUsername();
-                    goto print_data;
-                }
+        for (const auto& i : users) {
+            if (i.getUserID() == stoi(userBook)) {
+                username = i.getUsername();
+                break;
             }
         }
 
-        print_data: //break out of outer for-loop so program doesnt keep looping even after finding the user. ** Looking for a better implementation of this :( **
-        */
+        
 
         cout << left << "ID: " << setw(10) << bookID
              << " Title: " << setw(25) << bookTitle
-             << "\tAuthor: " << setw(10) << bookAuthor << endl;
-        //<< "\tCheckout: " << setw(20) << username << endl; //Unimplemented For now
+             << "\tAuthor: " << setw(10) << bookAuthor
+             << "\tCheckout: " << setw(20) << username << endl; //Unimplemented For now
     }
 }
 
-void Library::issueBook(int bookID, int userID)
+void Library::issueBook(int bookID, int userID, ofstream& oBooksFile)
 {
     for (auto &i : books)
     {
@@ -135,28 +134,30 @@ void Library::issueBook(int bookID, int userID)
                     i.setAvailability(false);
                     i.setUserBook(userID);
                     cout << "Book Issued." << endl;
-                    break;
+                    refresh(oBooksFile);
+                    return;
                 }
             }
+            cout << "User Not Found." << endl;
+            return;
         }
         else if (i.getID() == bookID && i.getAvailability() == false)
         {
-            string username;
             for (auto &j : users)
             {
                 if (j.getUserID() == i.getUserBook())
                 {
-                    username = j.getUsername();
-                    break;
+                    cout << "Book Already Issued to: " << j.getUsername() << endl;
+                    return;
                 }
             }
-            cout << "Book Already Issued to " << username << endl;
-            break;
+            return;
         }
     }
+    cout << "Book Not Found." << endl;
 }
 
-void Library::returnBook(int bookID)
+void Library::returnBook(int bookID, ofstream& oBooksFile)
 {
     for (auto &i : books)
     {
@@ -173,6 +174,8 @@ void Library::returnBook(int bookID)
             break;
         }
     }
+
+    refresh(oBooksFile);
 }
 
 int Library::addUser(string userName, int userID, ofstream &oUsersFile)
@@ -230,4 +233,22 @@ void Library::displayUsers(ifstream &iUsersFile)
 
         cout << "Name: " << userName << "\tUserID: " << stoi(userID) << endl; // Format to look prettier on console later :)
     }
+}
+
+void Library::refresh(ofstream& oBooksFile) {
+
+    if (oBooksFile.is_open())
+    {
+        /*Needs Better Implementation but works for now,
+        im thinking of just loading everything into a vector
+        on program start and then writing everything on close
+        so i dont have to keep opening and closing files. */
+        oBooksFile.close();
+        oBooksFile.open("libBook.txt", ios::out);
+    }
+
+    for (const auto& i : books) {
+        oBooksFile << i.getID() << ";" << i.getTitle() << ";" << i.getAuthor() << ";" << i.getAvailability() << ";" << i.getUserBook() << ";" << endl;
+    }
+
 }

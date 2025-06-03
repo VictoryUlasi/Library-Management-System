@@ -4,8 +4,8 @@
 
 using namespace std;
 
-Book::Book(int bookID, string bookTitle, string bookAuthor, bool isAvailable)
-    : bookID(bookID), bookTitle(bookTitle), bookAuthor(bookAuthor), isAvailable(isAvailable) {}
+Book::Book(int bookID, string bookTitle, string bookAuthor, bool isAvailable, int userBook)
+    : bookID(bookID), bookTitle(bookTitle), bookAuthor(bookAuthor), isAvailable(isAvailable), userBook(userBook) {}
 
 int Book::getID() const
 {
