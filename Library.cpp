@@ -174,6 +174,16 @@ void Library::returnBook(int bookID, ofstream& oBooksFile)
     cout << "Book Not Found." << endl;
 }
 
+void Library::searchBook(string bookName) { //V1 inneficient
+    for (const auto& i : books) {
+        if (i.getTitle() == bookName) {
+            cout << "Book Found." << endl;
+            cout << "ID: " << i.getID() << "Title: " << i.getTitle() << "Checkout: " << i.getUserBook();
+            return;
+        }
+    }
+}
+
 void Library::initUsers(ifstream& iUsersFile)
 {
     string tempUserID;

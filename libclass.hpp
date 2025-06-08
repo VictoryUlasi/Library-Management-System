@@ -61,6 +61,7 @@ public:
     void displayBooks(ifstream& iBooksFile);
     void issueBook(int bookID, int userID, ofstream& oBooksFile);
     void returnBook(int bookID, ofstream& oBooksFile);
+    void searchBook(string bookName);
     void initUsers(ifstream& iUsersFile);
     int addUser(string userName , int userID, ofstream& oUsersFile);
     void displayUsers(ifstream& iUsersFile);
