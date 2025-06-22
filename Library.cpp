@@ -2,19 +2,66 @@
 #include <iomanip>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <map>
-#include "Book.hpp"
-#include "User.hpp"
-#include "Library.hpp"
+#include <fstream>
+#include "libclass.hpp"
+using namespace std;
 
-void Library::addBook(int bookID, std::string bookTitle, std::string bookAuthor, bool isAvailable)
+void Library::initBooks(ifstream& iBooksFile)
 {
-    Book book(bookID, bookTitle, bookAuthor, isAvailable);
-    books.push_back(book);
+
+    string tempBookID;
+    string bookTitle;
+    string bookAuthor;
+    string tempAvailability;
+    string tempUserBook;
+
+    string line;
+
+    while (getline(iBooksFile, line))
+    {
+        stringstream ss(line);
+
+        getline(ss, tempBookID, ';');
+        getline(ss, bookTitle, ';');
+        getline(ss, bookAuthor, ';');
+        getline(ss, tempAvailability, ';');
+        getline(ss, tempUserBook, ';');
+
+        Book book(stoi(tempBookID), bookTitle, bookAuthor, stoi(tempAvailability), stoi(tempUserBook));
+
+        books.push_back(book);
+    }
 }
 
-void Library::removeBook(int id)
+int Library::addBook(int bookID, string bookTitle, string bookAuthor, ofstream &oBooksFile)
 {
+
+    for (const auto& i : books)
+    {
+        if (i.getID() == bookID)
+            return 1;
+    }
+    Book book(bookID, bookTitle, bookAuthor);
+    books.push_back(book);
+    refresh(oBooksFile);
+
+    return 0;
+}
+
+void Library::removeBook(int id, ofstream &oBooksFile)
+{
+    if (oBooksFile.is_open())
+    {
+        /*Needs Better Implementation but works for now,
+        im thinking of just loading everything into a vector
+        on program start and then writing everything on close
+        so i dont have to keep opening and closing files. */
+        oBooksFile.close();
+        oBooksFile.open("libBook.txt", ios::out);
+    }
+
     int bookPos = 0;
     for (const auto &i : books)
     {
@@ -25,31 +72,51 @@ void Library::removeBook(int id)
         }
         bookPos++;
     }
+
+    refresh(oBooksFile);
+    cout << "Book Removed." << endl;
 }
 
-void Library::displayBooks()
+void Library::displayBooks(ifstream &iBooksFile)
 {
-    for (auto &i : books)
-    {
-        std::string username = "In House";
+    iBooksFile.clear();            // Clear fstream without having to reopen fstream
+    iBooksFile.seekg(0, ios::beg); // Move fstream to top right of file so it can re read
 
-        for (auto &j : users)
-        {
-            if (j.getUserID() == i.getUserBook())
-            {
-                username = j.getUsername();
+    string bookID;
+    string bookTitle;
+    string bookAuthor;
+    string availability;
+    string userBook;
+
+    string line;
+
+    string username = "In House";
+
+    while (getline(iBooksFile, line))
+    {
+        stringstream ss(line);
+
+        getline(ss, bookID, ';');
+        getline(ss, bookTitle, ';');
+        getline(ss, bookAuthor, ';');
+        getline(ss, availability, ';');
+        getline(ss, userBook, ';');
+
+        for (const auto& i : users) {
+            if (i.getUserID() == stoi(userBook)) {
+                username = i.getUsername();
                 break;
             }
         }
-        std::cout << std::left << "ID: " << std::setw(10) << i.getID()
-                  << " Title: " << std::setw(25) << i.getTitle()
-                  << "\tAuthor: " << std::setw(10) << i.getAuthor()
-                  << "\tAvail: " << std::setw(5) << ((i.getAvailability()) ? "In" : "Out")
-                  << "\tCheckout: " << std::setw(20) << username << std::endl;
+
+        cout << left << "ID: " << setw(10) << bookID
+             << "Title: " << setw(25) << bookTitle
+             << "\tAuthor: " << setw(10) << bookAuthor
+             << "\tCheckout: " << setw(20) << username << endl; //Unimplemented For now
     }
 }
 
-void Library::issueBook(int bookID, int userID)
+void Library::issueBook(int bookID, int userID, ofstream& oBooksFile)
 {
     for (auto &i : books)
     {
@@ -62,29 +129,31 @@ void Library::issueBook(int bookID, int userID)
                     j.issueUserBook(bookID);
                     i.setAvailability(false);
                     i.setUserBook(userID);
-                    std::cout << "Book Issued." << std::endl;
-                    break;
+                    cout << "Book Issued." << endl;
+                    refresh(oBooksFile);
+                    return;
                 }
             }
+            cout << "User Not Found." << endl;
+            return;
         }
         else if (i.getID() == bookID && i.getAvailability() == false)
         {
-            std::string username;
             for (auto &j : users)
             {
                 if (j.getUserID() == i.getUserBook())
                 {
-                    username = j.getUsername();
-                    break;
+                    cout << "Book Already Issued to: " << j.getUsername() << endl;
+                    return;
                 }
             }
-            std::cout << "Book Already Issued to " << username << std::endl;
-            break;
+            return;
         }
     }
+    cout << "Book Not Found." << endl;
 }
 
-void Library::returnBook(int bookID)
+void Library::returnBook(int bookID, ofstream& oBooksFile)
 {
     for (auto &i : books)
     {
@@ -92,29 +161,122 @@ void Library::returnBook(int bookID)
         {
             i.setAvailability(true);
             i.setUserBook(0);
-            std::cout << "Book Returned." << std::endl;
-            break;
+            cout << "Book Returned." << endl;
+            refresh(oBooksFile);
+            return;
         }
         else if (i.getID() == bookID && i.getAvailability() == true)
         {
-            std::cout << "Book Already In House " << std::endl;
-            break;
+            cout << "Book Already In House " << endl;
+            return;
+        }
+    }
+    cout << "Book Not Found." << endl;
+}
+
+void Library::searchBook(string bookName) { //V1 inneficient
+    for (const auto& i : books) {
+        if (i.getTitle() == bookName) {
+            cout << "Book Found." << endl;
+            cout << "ID: " << i.getID() << "Title: " << i.getTitle() << "Checkout: " << i.getUserBook();
+            return;
         }
     }
 }
 
-int Library::addUser(std::string userName)
+void Library::initUsers(ifstream& iUsersFile)
 {
-    User user(userName, userID++);
+    string tempUserID;
+    string userName;
+
+    string line;
+
+    while (getline(iUsersFile, line))
+    {
+        stringstream ss(line);
+
+        getline(ss, tempUserID, ';');
+        getline(ss, userName, ';');
+
+        User user(userName, stoi(tempUserID));
+
+        users.push_back(user);
+    }
+}
+
+int Library::addUser(string userName, int userID, ofstream &oUsersFile)
+{
+    for (auto i : users)
+    {
+        if (i.getUserID() == userID)
+            return 1;
+    }
+    User user(userName, userID);
     users.push_back(user);
+
+    oUsersFile << userID << ";" << userName << ";" << endl;
 
     return 0;
 }
 
-void Library::displayUsers()
+void Library::displayUsers(ifstream &iUsersFile)
 {
-    for (const auto &i : users)
+    iUsersFile.clear();            // Same Implementation in displayBook() function
+    iUsersFile.seekg(0, ios::beg); // Same Implementation in displayBook() function
+
+    string userName;
+    string userID;
+    string line;
+
+    while (getline(iUsersFile, line))
     {
-        std::cout << "Name: " << i.getUsername() << "\tUserID: " << i.getUserID() << std::endl;
+        stringstream ss(line);
+        getline(ss, userID, ';');
+        getline(ss, userName, ';');
+
+        cout << left <<  "Name: " << setw(10) << userName << "\tUserID: " << setw(10) << stoi(userID) << endl; // Format to look prettier on console later :)
     }
+}
+
+void Library::removeUser(int id, ofstream& oUsersFile) {
+
+    int userPos = 0;
+    for (const auto& i : users)
+    {
+        if (i.getUserID() == id)
+        {
+            users.erase(users.begin() + userPos);
+
+            if (oUsersFile.is_open()) {
+                oUsersFile.close();
+                oUsersFile.open("libUser.txt", ios::out);
+            }
+
+            for (const auto& i : users) {
+                oUsersFile << i.getUserID() << ";" << i.getUsername() << ";" << endl;
+            }
+            cout << "User Removed" << endl;
+            return;
+        }
+        userPos++;
+    }
+    cout << "User Not Found." << endl;
+}
+
+void Library::refresh(ofstream& oBooksFile) {
+
+    if (oBooksFile.is_open())
+    {
+        /*Needs Better Implementation but works for now,
+        im thinking of just loading everything into a vector
+        on program start and then writing everything on close
+        so i dont have to keep opening and closing files. */
+        oBooksFile.close();
+        oBooksFile.open("libBook.txt", ios::out);
+    }
+
+    for (const auto& i : books) {
+        oBooksFile << i.getID() << ";" << i.getTitle() << ";" << i.getAuthor() << ";" << i.getAvailability() << ";" << i.getUserBook() << ";" << endl;
+    }
+
 }
