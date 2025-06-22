@@ -5,7 +5,7 @@ TARGET = LibraryApp
 
 TARGET_DEL = LibraryApp.exe
 
-SRCS = main.cpp book.cpp user.cpp library.cpp
+SRCS = main.cpp Book.cpp User.cpp Library.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
