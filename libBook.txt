@@ -1,11 +1,11 @@
-1125;Shadows of the Tundra;Grace Ellison;1;0;
+1125;Shadows of the Tundra;Grace Ellison;0;1001;
 2239;The Ocean's Lament;Henry Alvarez;1;0;
 3347;Ashes and Moonlight;Nora Chambers;1;0;
 4488;The Hollow Tree;Owen Riley;1;0;
 5591;Letters from Nowhere;Chloe Sinclair;1;0;
 6673;Kingdom of Dust;Miles Thornton;1;0;
 7784;The Painted Veil;Lily Tran;1;0;
-8892;Whispers from the Attic;Jack Ramsey;1;0;
+8892;Whispers from the Attic;Jack Ramsey;0;1013;
 9940;Through the Broken Glass;Ava Daniels;1;0;
 1016;Garden of the Lost;Caleb Foster;1;0;
 1023;The Whispering Shadows;Alice Monroe;1;0;
@@ -13,7 +13,7 @@
 3157;Echoes of the Forgotten;Sophie Bennett;1;0;
 4262;The Clockmakers Secret;Ethan Graham;1;0;
 5399;Crimson Skies;Isabella Reed;1;0;
-6471;The Last Ember;Noah Mitchell;1;0;
+6471;The Last Ember;Noah Mitchell;0;1001;
 7523;Voices in the Mist;Mia Harper;1;0;
 8680;Fragments of Tomorrow;James Nolan;1;0;
 9735;Beneath the Marble Sky;Emma Sullivan;1;0;
